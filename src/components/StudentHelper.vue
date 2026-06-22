@@ -671,8 +671,26 @@ const updateSubjectFromTask = () => {
 
 .dropzone.dragging {
   background-color: var(--color-bg-alt);
-  border-style: dashed;
+  border-color: transparent;
+  background-image: linear-gradient(90deg, var(--color-border) 50%, transparent 50%),
+                    linear-gradient(90deg, var(--color-border) 50%, transparent 50%),
+                    linear-gradient(0deg, var(--color-border) 50%, transparent 50%),
+                    linear-gradient(0deg, var(--color-border) 50%, transparent 50%);
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  background-size: 15px 1px, 15px 1px, 1px 15px, 1px 15px;
+  background-position: 0px 0px, 100% 100%, 0px 100%, 100% 0px;
+  animation: marchingAnts 0.6s linear infinite;
 }
+
+@keyframes marchingAnts {
+  0% {
+    background-position: 0px 0px, 100% 100%, 0px 100%, 100% 0px;
+  }
+  100% {
+    background-position: 15px 0px, -15px 100%, 0px -15px, 100% 15px;
+  }
+}
+
 
 .dropzone.has-file {
   border-style: solid;

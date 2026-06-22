@@ -4,6 +4,27 @@ import { ref, onMounted, onUnmounted } from 'vue'
 const activeMenu = ref<string | null>(null)
 const activeSubMenu = ref<string | null>(null)
 const mobileMenuOpen = ref(false)
+const paperToneOpen = ref(false)
+
+// Paper tone themes
+type PaperTone = 'ivory' | 'white' | 'papyrus' | 'smoke'
+
+const currentTone = ref<PaperTone>('ivory')
+
+const paperTones: { key: PaperTone; label: string }[] = [
+  { key: 'ivory', label: 'Marfil Fino' },
+  { key: 'white', label: 'Blanco Puro' },
+  { key: 'papyrus', label: 'Papiro Suave' },
+  { key: 'smoke', label: 'Humo Mínimo' }
+]
+
+const setTone = (tone: PaperTone) => {
+  currentTone.value = tone
+  // Remove all theme classes from body
+  document.body.classList.remove('theme-ivory', 'theme-white', 'theme-papyrus', 'theme-smoke')
+  document.body.classList.add(`theme-${tone}`)
+  paperToneOpen.value = false
+}
 
 const toggleMenu = (menuName: string) => {
   if (activeMenu.value === menuName) {
@@ -27,6 +48,7 @@ const closeAll = () => {
   activeMenu.value = null
   activeSubMenu.value = null
   mobileMenuOpen.value = false
+  paperToneOpen.value = false
 }
 
 // Close on click outside
@@ -39,6 +61,8 @@ const handleClickOutside = (event: MouseEvent) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  // Set default theme class
+  document.body.classList.add('theme-ivory')
 })
 
 onUnmounted(() => {
@@ -133,7 +157,7 @@ onUnmounted(() => {
               </button>
               <!-- Level 2 Dropdown (Submenu) -->
               <div v-if="activeSubMenu === 'portal'" class="submenu-panel flat-border">
-                <a href="#student-lms" class="submenu-link" @click="closeAll">Buzón de Tareas</a>
+                <RouterLink to="/portal" class="submenu-link" @click="closeAll">Buzón de Tareas</RouterLink>
                 <a href="#student-grades" class="submenu-link" @click="closeAll">Calificaciones</a>
                 <a href="#student-schedule" class="submenu-link" @click="closeAll">Horarios & Inscripción</a>
               </div>
@@ -160,11 +184,34 @@ onUnmounted(() => {
         <RouterLink to="/" class="nav-link" @click="closeAll">Admisiones</RouterLink>
       </div>
 
-      <!-- Action Button / Portal Access -->
+      <!-- Right Actions: Paper Tone Selector + Portal Button -->
       <div class="nav-action-desktop">
-        <a href="#lms-demo" class="flat-button flat-button-dark">
-          <span>Portal de Tareas</span>
-        </a>
+        <!-- Paper Tone Selector -->
+        <div class="tone-selector-container">
+          <button @click.stop="paperToneOpen = !paperToneOpen" class="tone-selector-btn" aria-label="Cambiar tono de papel">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-1 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </svg>
+          </button>
+
+          <div v-if="paperToneOpen" class="tone-dropdown flat-border">
+            <span class="tone-dropdown-title">Tono de Papel</span>
+            <button 
+              v-for="tone in paperTones" 
+              :key="tone.key" 
+              @click="setTone(tone.key)"
+              class="tone-option"
+              :class="{ active: currentTone === tone.key }"
+            >
+              <span class="tone-swatch" :class="`swatch-${tone.key}`"></span>
+              {{ tone.label }}
+            </button>
+          </div>
+        </div>
+
+        <RouterLink to="/portal" class="flat-button flat-button-dark" @click="closeAll">
+          Portal de Tareas
+        </RouterLink>
       </div>
 
       <!-- Mobile Menu Toggle Button -->
@@ -228,7 +275,7 @@ onUnmounted(() => {
               Portal Estudiantil
             </button>
             <div v-if="activeSubMenu === 'm-portal'" class="mobile-sub-sub-container">
-              <a href="#student-lms" class="mobile-sub-link" @click="closeAll">Buzón de Tareas</a>
+              <RouterLink to="/portal" class="mobile-sub-link" @click="closeAll">Buzón de Tareas</RouterLink>
               <a href="#student-grades" class="mobile-sub-link" @click="closeAll">Calificaciones</a>
               <a href="#student-schedule" class="mobile-sub-link" @click="closeAll">Horarios & Inscripción</a>
             </div>
@@ -245,9 +292,26 @@ onUnmounted(() => {
 
         <RouterLink to="/" class="mobile-nav-link" @click="closeAll">Admisiones</RouterLink>
 
-        <a href="#lms-demo" class="flat-button flat-button-dark" style="margin-top: 1.5rem; width: 100%; text-align: center;" @click="closeAll">
+        <!-- Mobile Tone Selector -->
+        <div class="mobile-tone-selector">
+          <span class="mobile-tone-label">Tono de papel:</span>
+          <div class="mobile-tone-options">
+            <button 
+              v-for="tone in paperTones" 
+              :key="tone.key" 
+              @click="setTone(tone.key)"
+              class="mobile-tone-btn"
+              :class="{ active: currentTone === tone.key }"
+              :aria-label="tone.label"
+            >
+              <span class="tone-swatch" :class="`swatch-${tone.key}`"></span>
+            </button>
+          </div>
+        </div>
+
+        <RouterLink to="/portal" class="flat-button flat-button-dark" style="margin-top: 1rem; width: 100%; text-align: center;" @click="closeAll">
           Portal de Tareas
-        </a>
+        </RouterLink>
       </div>
     </div>
   </nav>
@@ -395,7 +459,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   padding: 0.5rem 0;
-  margin-left: -1px; /* Align border */
+  margin-left: -1px;
   z-index: 11;
 }
 
@@ -404,6 +468,7 @@ onUnmounted(() => {
   font-size: 0.85rem;
   color: var(--color-text-muted);
   padding: 0.6rem 1.25rem;
+  display: block;
 }
 
 .submenu-link:hover {
@@ -419,6 +484,98 @@ onUnmounted(() => {
 .chevron-icon-sub.rotated {
   transform: rotate(90deg);
 }
+
+/* Nav Action Area */
+.nav-action-desktop {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Paper Tone Selector */
+.tone-selector-container {
+  position: relative;
+}
+
+.tone-selector-btn {
+  background: none;
+  border: 1px solid var(--color-border-subtle);
+  padding: 0.5rem;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.tone-selector-btn:hover {
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.tone-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: var(--color-bg);
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 0;
+  z-index: 20;
+}
+
+.tone-dropdown-title {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  padding: 0 1rem 0.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin-bottom: 0.25rem;
+}
+
+.tone-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  width: 100%;
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.tone-option:hover {
+  background-color: var(--color-bg-alt);
+  color: var(--color-text);
+}
+
+.tone-option.active {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.tone-swatch {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-border);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.swatch-ivory { background-color: #FAF9F6; }
+.swatch-white { background-color: #FFFFFF; }
+.swatch-papyrus { background-color: #F0EDE4; }
+.swatch-smoke { background-color: #ECECEA; }
 
 /* Mobile Toggle */
 .mobile-toggle-btn {
@@ -523,5 +680,42 @@ onUnmounted(() => {
 
 .mobile-sub-link:hover {
   color: var(--color-text);
+}
+
+/* Mobile Tone Selector */
+.mobile-tone-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--color-border-subtle);
+  margin-top: 0.5rem;
+}
+
+.mobile-tone-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.mobile-tone-options {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mobile-tone-btn {
+  background: none;
+  border: 1px solid var(--color-border-subtle);
+  padding: 0.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.mobile-tone-btn.active {
+  border-color: var(--color-border);
 }
 </style>

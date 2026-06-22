@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import InfoCarousel from '../components/InfoCarousel.vue'
-import StudentHelper from '../components/StudentHelper.vue'
 </script>
 
 <template>
-  <main class="home-wrapper">
+  <main class="home-wrapper fade-in-element">
     <!-- Hero Section -->
     <header class="hero-section container-custom">
+      <!-- Archival reference tag -->
+      <div class="section-index-tag">[SEC-01 // INF-HERO]</div>
       <div class="editorial-grid">
         <!-- Hero Text (Left) -->
         <div class="hero-text-col">
@@ -21,13 +22,14 @@ import StudentHelper from '../components/StudentHelper.vue'
             Diseñado bajo una filosofía de minimalismo cognitivo, descartamos las distracciones visuales y los neones decorativos para ofrecer una plataforma centrada en la lectura profunda, la escritura clara y la entrega eficiente de tus asignaciones universitarias.
           </p>
           <div class="hero-actions">
-            <a href="#lms-demo" class="flat-button flat-button-dark">Ir al Buzón de Tareas</a>
+            <RouterLink to="/portal" class="flat-button flat-button-dark">Ir al Portal de Tareas</RouterLink>
             <a href="#about-prisma" class="flat-button">Conocer la Universidad</a>
           </div>
         </div>
 
         <!-- Hero Graphic/Quote (Right) -->
         <div class="hero-quote-col">
+          <!-- Editorial border layout -->
           <div class="editorial-quote-box flat-border">
             <span class="quote-symbol">«</span>
             <blockquote class="hero-quote">
@@ -52,7 +54,10 @@ import StudentHelper from '../components/StudentHelper.vue'
 
     <!-- Manifesto / Core Principles Section -->
     <section class="manifesto-section container-custom">
-      <div class="section-divider"></div>
+      <div class="section-divider-grid">
+        <div class="grid-line horizontal-thick"></div>
+        <div class="section-index-tag">[SEC-02 // MANIFESTO-PRISMA]</div>
+      </div>
       <div class="manifesto-header">
         <span class="badge-flat badge-blue">Nuestros Fundamentos</span>
         <h2 class="section-title">Una universidad diseñada de manera diferente</h2>
@@ -79,7 +84,10 @@ import StudentHelper from '../components/StudentHelper.vue'
 
     <!-- Carousel Section (PRISMA UNIVERSITY information) -->
     <section class="university-info-section container-custom" id="about-prisma">
-      <div class="section-divider"></div>
+      <div class="section-divider-grid">
+        <div class="grid-line horizontal-thick"></div>
+        <div class="section-index-tag">[SEC-03 // REGISTRO-CAMPUS]</div>
+      </div>
       <div class="carousel-section-header">
         <div class="header-left">
           <span class="badge-flat badge-clay">Explora el Campus</span>
@@ -91,14 +99,6 @@ import StudentHelper from '../components/StudentHelper.vue'
       <!-- Component Carrusel -->
       <InfoCarousel />
     </section>
-
-    <!-- Student Helper & Task Submission Simulator -->
-    <section class="student-helper-section container-custom">
-      <div class="section-divider"></div>
-      
-      <!-- Component Helper -->
-      <StudentHelper />
-    </section>
   </main>
 </template>
 
@@ -107,9 +107,24 @@ import StudentHelper from '../components/StudentHelper.vue'
   padding-top: 3rem;
 }
 
+.section-index-tag {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
 /* Hero Section */
 .hero-section {
   padding-bottom: 4rem;
+}
+
+.hero-section .section-index-tag {
+  margin-top: -1.5rem;
+  margin-bottom: 2rem;
 }
 
 .hero-badge {
@@ -220,11 +235,19 @@ import StudentHelper from '../components/StudentHelper.vue'
 }
 
 /* Sections Dividers & Headers */
-.section-divider {
+.section-divider-grid {
+  width: 100%;
+  margin-top: 6rem;
+  margin-bottom: 3rem;
+}
+
+.grid-line {
+  background-color: var(--color-border);
+}
+
+.grid-line.horizontal-thick {
   width: 100%;
   height: 1px;
-  background-color: var(--color-border);
-  margin-bottom: 5rem;
 }
 
 .section-title {
@@ -241,7 +264,7 @@ import StudentHelper from '../components/StudentHelper.vue'
 
 /* Manifesto Section */
 .manifesto-section {
-  margin-top: 4rem;
+  margin-top: 2rem;
 }
 
 .manifesto-header {
@@ -253,6 +276,8 @@ import StudentHelper from '../components/StudentHelper.vue'
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding-bottom: 4rem;
 }
 
 @media (max-width: 850px) {
@@ -265,12 +290,16 @@ import StudentHelper from '../components/StudentHelper.vue'
 .principle-card {
   padding: 2.5rem;
   background-color: var(--color-bg);
-  transition: background-color var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+  box-shadow: 0 0 0 var(--color-border);
 }
 
 .principle-card:hover {
   background-color: var(--color-bg-alt);
+  transform: translate(-3px, -3px);
+  box-shadow: 3px 3px 0px var(--color-border);
 }
+
 
 .principle-num {
   font-family: var(--font-serif);
@@ -296,7 +325,8 @@ import StudentHelper from '../components/StudentHelper.vue'
 
 /* Carousel Section Specific */
 .university-info-section {
-  margin-top: 6rem;
+  margin-top: 2rem;
+  padding-bottom: 4rem;
 }
 
 .carousel-section-header {

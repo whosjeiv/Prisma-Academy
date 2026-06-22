@@ -42,6 +42,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 #app {
@@ -119,34 +120,16 @@ a {
   color: var(--color-text);
   border: 1px solid var(--color-border);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
   position: relative;
-}
-
-.flat-button::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  right: -3px;
-  bottom: -3px;
-  border: 1px solid var(--color-border);
-  z-index: -1;
-  background-color: transparent;
-  transition: all var(--transition-fast);
+  box-shadow: 0 0 0 var(--color-border);
 }
 
 .flat-button:hover {
   background-color: var(--color-text);
   color: var(--color-bg);
-}
-
-.flat-button:hover::after {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 0;
+  transform: translate(-3px, -3px);
+  box-shadow: 3px 3px 0px var(--color-border);
 }
 
 .flat-button-dark {
@@ -154,13 +137,11 @@ a {
   color: var(--color-bg);
 }
 
-.flat-button-dark::after {
-  border-color: var(--color-text);
-}
-
 .flat-button-dark:hover {
   background-color: var(--color-bg);
   color: var(--color-text);
+  transform: translate(-3px, -3px);
+  box-shadow: 3px 3px 0px var(--color-border);
 }
 
 /* Flat Card definition */
@@ -168,11 +149,14 @@ a {
   background-color: var(--color-bg);
   border: 1px solid var(--color-border);
   padding: 2rem;
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 0 0 0 var(--color-border);
 }
 
 .flat-card:hover {
   background-color: var(--color-bg-alt);
+  transform: translate(-3px, -3px);
+  box-shadow: 3px 3px 0px var(--color-border);
 }
 
 /* Badge helpers */
@@ -218,4 +202,57 @@ a {
     flex-direction: column;
     gap: 1.5rem;
   }
+}
+
+/* Scroll Reveal / Entrance Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-element {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Paper tone theme classes */
+body.theme-ivory {
+  --color-bg: #FAF9F6;
+  --color-bg-alt: #F3F1EC;
+  --color-text: #1C1B19;
+  --color-text-muted: #5C5A56;
+  --color-border: #1C1B19;
+  --color-border-subtle: #D0CFCB;
+}
+
+body.theme-white {
+  --color-bg: #FFFFFF;
+  --color-bg-alt: #F8F8F8;
+  --color-text: #1C1B19;
+  --color-text-muted: #606060;
+  --color-border: #1C1B19;
+  --color-border-subtle: #E2E2E2;
+}
+
+body.theme-papyrus {
+  --color-bg: #F0EDE4;
+  --color-bg-alt: #E8E4DA;
+  --color-text: #1A1A18;
+  --color-text-muted: #58554E;
+  --color-border: #1A1A18;
+  --color-border-subtle: #D3CEBF;
+}
+
+body.theme-smoke {
+  --color-bg: #ECECEA;
+  --color-bg-alt: #E3E3E1;
+  --color-text: #1F1F1E;
+  --color-text-muted: #5A5A58;
+  --color-border: #1F1F1E;
+  --color-border-subtle: #D0D0CE;
 }
